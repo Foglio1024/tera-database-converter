@@ -128,6 +128,13 @@ namespace TeraDatabaseConverter
                         connectedSkills.Add(Convert.ToUInt32(addConnectSkillElement.Attribute("redirectSkill").Value));
                     }
                 }
+                if (skillElement.Descendants().Any(x => x.Name == "AddAbnormalityConnectSkill"))
+                {
+                    foreach (var addConnectSkillElement in skillElement.Descendants().Where(x => x.Name == "AddAbnormalityConnectSkill"))
+                    {
+                        connectedSkills.Add(Convert.ToUInt32(addConnectSkillElement.Attribute("redirectSkill").Value));
+                    }
+                }
                 Skill sk = new Skill(id, c);
                 foreach (var item in connectedSkills)
                 {
@@ -135,7 +142,11 @@ namespace TeraDatabaseConverter
                 }
                 if (!Skills[c].ContainsKey(id))
                 {
-                    Skills[c].Add(id, sk);
+                    if(Skills[c].ContainsKey(id - id % 100))
+                    {
+                        Skills[c][id - id % 100].AddConnectedSkill(id);
+                    }
+                    else Skills[c].Add(id, sk);
                 }
             }
         }
@@ -186,7 +197,27 @@ namespace TeraDatabaseConverter
             var s = new Skill(60010, Class.Common, "Hurricane", "");
             s.SetSkillIcon("icon_skills.armorbreak_tex");
             Skills[Class.Common].Add(s.Id, s);
-         
+
+            //check if connected skills are in the main list and remove them
+            foreach (var dict in Skills.Values)
+            {
+                List<uint> remove = new List<uint>();
+
+                foreach (var skill in dict.Values)
+                {
+                    skill.ConnectedSkills = skill.ConnectedSkills.Distinct().ToList();
+                    if (dict.Any(x => x.Value.ConnectedSkills.Contains(skill.Id)))
+                    {
+                        remove.Add(skill.Id);
+                    }
+                }
+
+                foreach (var skillToRemove in remove)
+                {
+                    dict.Remove(skillToRemove);
+                }
+            }
+
         }
 
         public static void DumpToTSV()

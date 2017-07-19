@@ -14,8 +14,8 @@ namespace TeraDatabaseConverter
             //AbnormalitiesParser.Populate();
             //AbnormalitiesParser.DumpToTSV("abnormalities");
 
-            //SkillsParser.Populate();
-            //SkillsParser.DumpToTSV();
+            SkillsParser.Populate();
+            SkillsParser.DumpToTSV();
 
             //CheckIcons();
 
@@ -23,7 +23,7 @@ namespace TeraDatabaseConverter
 
             //ItemsParser.Parse();
 
-            GuildQuestsParser.Parse();
+            //GuildQuestsParser.Parse();
 
             //AccountBenefitParser.Parse();
 
