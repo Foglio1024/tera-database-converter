@@ -9,7 +9,7 @@ namespace TeraDatabaseConverter
 {
     public static class Utilities
     {
-        public static string DATABASE_PATH = @"I:\Progetti VS\TeraDataTools-master\TeraDataTools-master\release\xml patch57EU-EN";
+        public static string DATABASE_PATH = @"C:\Users\Vincenzo1\Desktop\TCC update\";
         public static string ICONS_PATH = @"I:\TERA\Client\S1Game\CookedPC\Art_Data\Packages\UmodelExport";
     }
 }

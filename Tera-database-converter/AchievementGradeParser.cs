@@ -12,7 +12,7 @@ namespace TeraDatabaseConverter
         static XDocument Doc;
         static void Load()
         {
-            Doc = XDocument.Load(Utilities.DATABASE_PATH + "/StrSheet_AchievementGradeInfo.xml");
+            Doc = XDocument.Load(Utilities.DATABASE_PATH + "EU-EN/StrSheet_AchievementGradeInfo.xml");
         }
         static void ParseDoc()
         {

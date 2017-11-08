@@ -13,7 +13,7 @@ namespace TeraDatabaseConverter
 
         public static void Parse()
         {
-            Doc = XDocument.Load(Utilities.DATABASE_PATH + "/StrSheet_AccountBenefit.xml");
+            Doc = XDocument.Load(Utilities.DATABASE_PATH + "EU-EN/StrSheet_AccountBenefit.xml");
             List<string> lines = new List<string>();
             foreach (var item in Doc.Descendants().Where(x => x.Name == "String"))
             {

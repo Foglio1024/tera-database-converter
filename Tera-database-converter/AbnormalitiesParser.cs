@@ -12,25 +12,31 @@ namespace TeraDatabaseConverter
     {
         public static Dictionary<uint, Abnormality> Abnormalities;
 
+        internal static void Parse(string lang)
+        {
+            Populate(lang);
+            DumpToTSV(lang);
+        }
+
         static List<XDocument> StrSheet_AbnormalityDocs;
         static List<XDocument> AbnormalityIconDataDocs;
         static List<XDocument> AbnormalityDataDocs;
 
-        static void LoadFiles()
+        static void LoadFiles(string region)
         {
-            foreach (var f in Directory.EnumerateFiles(Utilities.DATABASE_PATH + "/StrSheet_Abnormality"))
+            foreach (var f in Directory.EnumerateFiles(Utilities.DATABASE_PATH + region + "/StrSheet_Abnormality"))
             {
                 var d = XDocument.Load(f);
                 StrSheet_AbnormalityDocs.Add(d);
             }
 
-            foreach (var f in Directory.EnumerateFiles(Utilities.DATABASE_PATH + "/AbnormalityIconData"))
+            foreach (var f in Directory.EnumerateFiles(Utilities.DATABASE_PATH + region + "/AbnormalityIconData"))
             {
                 var d = XDocument.Load(f);
                 AbnormalityIconDataDocs.Add(d);
             }
 
-            foreach (var f in Directory.EnumerateFiles(Utilities.DATABASE_PATH + "/Abnormality"))
+            foreach (var f in Directory.EnumerateFiles(Utilities.DATABASE_PATH + region + "/Abnormality"))
             {
                 var d = XDocument.Load(f);
                 AbnormalityDataDocs.Add(d);
@@ -74,7 +80,7 @@ namespace TeraDatabaseConverter
                     catch (Exception)
                     {
 
-                        
+
                     }
 
                 }
@@ -122,14 +128,14 @@ namespace TeraDatabaseConverter
             }
         }
 
-        public static void Populate()
+        static void Populate(string region)
         {
             Abnormalities = new Dictionary<uint, Abnormality>();
             StrSheet_AbnormalityDocs = new List<XDocument>();
             AbnormalityIconDataDocs = new List<XDocument>();
             AbnormalityDataDocs = new List<XDocument>();
 
-            LoadFiles();
+            LoadFiles(region);
 
             foreach (var doc in AbnormalityDataDocs)
             {
@@ -158,15 +164,14 @@ namespace TeraDatabaseConverter
                 //Abnormalities.Remove(item.Id);
             }
         }
-        public static void DumpToTSV(string filename)
+        static void DumpToTSV(string region)
         {
             List<string> fileLines = new List<string>();
             foreach (var item in Abnormalities)
             {
-                    fileLines.Add(item.Value.ToString());
-             
+                fileLines.Add(item.Value.ToString());
             }
-            File.WriteAllLines(Environment.CurrentDirectory + "/"+filename+".tsv", fileLines);
+            File.WriteAllLines("abnormals-" + region + ".tsv", fileLines);
         }
 
         public static void LoadTSV()
@@ -183,7 +188,7 @@ namespace TeraDatabaseConverter
                 var id = Convert.ToUInt32(s[0]);
                 Enum.TryParse(s[1], out AbnormalityType t);
                 var isShow = bool.Parse(s[2]);
-                var isBuff= bool.Parse(s[3]);
+                var isBuff = bool.Parse(s[3]);
                 var infinity = bool.Parse(s[4]);
                 var name = s[5];
                 var tooltip = s[6].Replace("&#xA;", "\n");
@@ -215,7 +220,7 @@ namespace TeraDatabaseConverter
         public Abnormality(uint id, bool isShow, bool isBuff, bool infinity, AbnormalityType prop)
         {
             Effects = new List<Effect>();
-            Id = id;         
+            Id = id;
             IsShow = isShow;
             IsBuff = isBuff;
             Infinity = infinity;
@@ -223,7 +228,7 @@ namespace TeraDatabaseConverter
         }
         void ReplaceValues()
         {
-            if(Effects.Count < 1 || ToolTip == null)
+            if (Effects.Count < 1 || ToolTip == null)
             {
                 return;
             }
@@ -231,19 +236,19 @@ namespace TeraDatabaseConverter
             {
                 for (int i = 0; i < Effects.Count; i++)
                 {
-                    if(i == 0)
+                    if (i == 0)
                     {
                         string val;
-                        if(Effects[i].method == 3)
+                        if (Effects[i].method == 3)
                         {
-                            val = Math.Abs(((Effects[i].value * 100)-100)).ToString() + "%";
+                            val = Math.Abs(((Effects[i].value * 100) - 100)).ToString() + "%";
                         }
                         else
                         {
                             val = Effects[i].value.ToString();
                         }
                         string pl = "";
-                        if(Effects[i].tickInterval == 1)
+                        if (Effects[i].tickInterval == 1)
                         {
                             pl = "";
                         }
@@ -251,8 +256,8 @@ namespace TeraDatabaseConverter
                         {
                             pl = "1";
                         }
-                        ToolTip = ToolTip.Replace("$value$",val+"$");
-                        ToolTip = ToolTip.Replace("$tickInterval$COLOR_END", (Effects[i].tickInterval).ToString() + "$COLOR_END second"+pl);
+                        ToolTip = ToolTip.Replace("$value$", val + "$");
+                        ToolTip = ToolTip.Replace("$tickInterval$COLOR_END", (Effects[i].tickInterval).ToString() + "$COLOR_END second" + pl);
                     }
                     else
                     {
@@ -275,8 +280,8 @@ namespace TeraDatabaseConverter
                         {
                             pl = "1";
                         }
-                        ToolTip = ToolTip.Replace("$value"+index+"$",  val + "$");
-                        ToolTip = ToolTip.Replace("$tickInterval" + index + "$COLOR_END", (Effects[i].tickInterval).ToString()+"$COLOR_END second"+pl);
+                        ToolTip = ToolTip.Replace("$value" + index + "$", val + "$");
+                        ToolTip = ToolTip.Replace("$tickInterval" + index + "$COLOR_END", (Effects[i].tickInterval).ToString() + "$COLOR_END second" + pl);
 
 
                     }
@@ -291,7 +296,7 @@ namespace TeraDatabaseConverter
         public void SetInfo(string name, string toolTip)
         {
             Name = name;
-            ToolTip = toolTip.Replace("\n","&#xA;");
+            ToolTip = toolTip.Replace("\n", "&#xA;").Replace("\r", "&#xD;");
         }
 
         public override string ToString()

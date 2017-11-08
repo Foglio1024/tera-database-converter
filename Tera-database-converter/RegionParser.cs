@@ -12,9 +12,9 @@ namespace TeraDatabaseConverter
     {
         static XDocument StrSheet_Region;
         static Dictionary<int, string> Regions;
-        static void LoadFile()
+        static void LoadFile(string region)
         {
-            StrSheet_Region = XDocument.Load(Utilities.DATABASE_PATH + @"/StrSheet_Region.xml");
+            StrSheet_Region = XDocument.Load(Utilities.DATABASE_PATH + region + @"/StrSheet_Region.xml");
         }
         static void ParseRegionStrings()
         {
@@ -38,10 +38,10 @@ namespace TeraDatabaseConverter
             }
             File.WriteAllLines("regions.tsv", lines);
         }
-        public static void Parse()
+        public static void Parse(string region)
         {
             Regions = new Dictionary<int, string>();
-            LoadFile();
+            LoadFile(region);
             ParseRegionStrings();
             DumpToTSV();
         }

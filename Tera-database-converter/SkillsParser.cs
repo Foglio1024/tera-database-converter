@@ -18,11 +18,11 @@ namespace TeraDatabaseConverter
         static XDocument ConnectedSkillsDoc;
         static List<SkillConnection> SkillConnections;
 
-        static void LoadFiles()
+        static void LoadFiles(string region)
         {
             int j = 1;
-            int n = Directory.EnumerateFiles(Utilities.DATABASE_PATH + @"/StrSheet_UserSkill").Count();
-            foreach (var f in Directory.EnumerateFiles(Utilities.DATABASE_PATH + @"/StrSheet_UserSkill"))
+            int n = Directory.EnumerateFiles(Utilities.DATABASE_PATH +region+ @"/StrSheet_UserSkill").Count();
+            foreach (var f in Directory.EnumerateFiles(Utilities.DATABASE_PATH + region + @"/StrSheet_UserSkill"))
             {
                 var d = XDocument.Load(f);
                 StrSheet_UserSkillsDocs.Add(d);
@@ -31,8 +31,8 @@ namespace TeraDatabaseConverter
             }
 
             j = 1;
-            n = Directory.EnumerateFiles(Utilities.DATABASE_PATH + @"/SkillIconData").Count();
-            foreach (var f in Directory.EnumerateFiles(Utilities.DATABASE_PATH + @"/SkillIconData"))
+            n = Directory.EnumerateFiles(Utilities.DATABASE_PATH+region + @"/SkillIconData").Count();
+            foreach (var f in Directory.EnumerateFiles(Utilities.DATABASE_PATH + region + @"/SkillIconData"))
             {
                 var d = XDocument.Load(f);
                 SkillIconData.Add(d);
@@ -42,8 +42,8 @@ namespace TeraDatabaseConverter
             }
 
             j = 1;
-            n = Directory.EnumerateFiles(Utilities.DATABASE_PATH + @"/SkillData").Count();
-            foreach (var f in Directory.EnumerateFiles(Utilities.DATABASE_PATH + "/SkillData"))
+            n = Directory.EnumerateFiles(Utilities.DATABASE_PATH +region+ @"/SkillData").Count();
+            foreach (var f in Directory.EnumerateFiles(Utilities.DATABASE_PATH + region + "/SkillData"))
             {
                 var d = XDocument.Load(f);
                 SkillDataDocs.Add(d);
@@ -135,11 +135,13 @@ namespace TeraDatabaseConverter
                         connectedSkills.Add(Convert.ToUInt32(addConnectSkillElement.Attribute("redirectSkill").Value));
                     }
                 }
+                if(!Skills.ContainsKey(c)) continue;
                 Skill sk = new Skill(id, c);
                 foreach (var item in connectedSkills)
                 {
                     sk.AddConnectedSkill(item);
                 }
+                
                 if (!Skills[c].ContainsKey(id))
                 {
                     if(Skills[c].ContainsKey(id - id % 100))
@@ -152,7 +154,7 @@ namespace TeraDatabaseConverter
         }
 
                 
-        public static void Populate()
+        static void Populate(string region)
         {
             StrSheet_UserSkillsDocs = new List<XDocument>();
             SkillIconData = new List<XDocument>();
@@ -165,7 +167,7 @@ namespace TeraDatabaseConverter
             }
             Skills.Add(Class.Common, new Dictionary<uint, Skill>());
 
-            LoadFiles();
+            LoadFiles(region);
             Console.WriteLine("\nDone loading");
 
             //parse
@@ -220,7 +222,7 @@ namespace TeraDatabaseConverter
 
         }
 
-        public static void DumpToTSV()
+        static void DumpToTSV()
         {
             List<string> fileLines = new List<string>();
             foreach (var classDictPair in Skills)
@@ -237,6 +239,11 @@ namespace TeraDatabaseConverter
 
         }
 
+        public static void Parse(string region)
+        {
+            Populate(region);
+            DumpToTSV();
+        }
 
         class SkillConnection
         {

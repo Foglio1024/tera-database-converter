@@ -12,10 +12,10 @@ namespace TeraDatabaseConverter
     {
         static List<XDocument> Docs;
         static Dictionary<string, string> Quests;
-        static void Load()
+        static void Load(string region)
         {
             Docs = new List<XDocument>();
-            foreach (var f in Directory.EnumerateFiles(Utilities.DATABASE_PATH + "/StrSheet_Quest/"))
+            foreach (var f in Directory.EnumerateFiles(Utilities.DATABASE_PATH + region + "/StrSheet_Quest/"))
             {
                 if (f.EndsWith("-0.xml")) continue;
                 Docs.Add(XDocument.Load(f));
@@ -47,9 +47,9 @@ namespace TeraDatabaseConverter
             }
             File.WriteAllLines("quests.tsv", lines);
         }
-        public static void Parse()
+        public static void Parse(string region)
         {
-            Load();
+            Load(region);
             ParseDocs();
             Dump();
         }

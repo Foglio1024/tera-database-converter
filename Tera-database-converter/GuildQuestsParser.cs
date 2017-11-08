@@ -17,13 +17,13 @@ namespace TeraDatabaseConverter
         private static XDocument StrSheet_ZoneName;
         private static Dictionary<uint, GuildQuest> GuildQuests;
 
-        private static void Load()
+        private static void Load(string region)
         {
-            Data = XDocument.Load(Utilities.DATABASE_PATH + "/GuildQuest.xml");
-            StrSheet = XDocument.Load(Utilities.DATABASE_PATH + "/StrSheet_GuildQuest.xml");
-            BattleFieldData = XDocument.Load(Utilities.DATABASE_PATH + "/BattleFieldData.xml");
-            StrSheet_BattleField = XDocument.Load(Utilities.DATABASE_PATH + "/StrSheet_BattleField.xml");
-            StrSheet_ZoneName = XDocument.Load(Utilities.DATABASE_PATH + "/StrSheet_ZoneName.xml");
+            Data = XDocument.Load(Utilities.DATABASE_PATH + region + "/GuildQuest.xml");
+            StrSheet = XDocument.Load(Utilities.DATABASE_PATH + region + "/StrSheet_GuildQuest.xml");
+            BattleFieldData = XDocument.Load(Utilities.DATABASE_PATH + region + "/BattleFieldData.xml");
+            StrSheet_BattleField = XDocument.Load(Utilities.DATABASE_PATH + region + "/StrSheet_BattleField.xml");
+            StrSheet_ZoneName = XDocument.Load(Utilities.DATABASE_PATH + region + "/StrSheet_ZoneName.xml");
         }
         private static void ParseDataDoc()
         {
@@ -87,10 +87,10 @@ namespace TeraDatabaseConverter
             }
             File.WriteAllLines("guild-quests.tsv", lines);
         }
-        public static void Parse()
+        public static void Parse(string region)
         {
             GuildQuests = new Dictionary<uint, GuildQuest>();
-            Load();
+            Load(region);
             ParseStrSheetDoc();
             ParseDataDoc();
             Dump();

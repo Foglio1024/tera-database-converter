@@ -12,9 +12,9 @@ namespace TeraDatabaseConverter
     {
         static Dictionary<uint, string> Dungeons;
         static XDocument Doc;
-        static void Load()
+        static void Load(string region)
         {
-            Doc = XDocument.Load(Utilities.DATABASE_PATH + "/StrSheet_Dungeon/StrSheet_Dungeon-0.xml");
+            Doc = XDocument.Load(Utilities.DATABASE_PATH + region + "/StrSheet_Dungeon/StrSheet_Dungeon-0.xml");
         }
         static void ParseDoc()
         {
@@ -40,9 +40,9 @@ namespace TeraDatabaseConverter
             }
             File.WriteAllLines("dungeons.tsv", lines);
         }
-        public static void Parse()
+        public static void Parse(string region)
         {
-            Load();
+            Load(region);
             ParseDoc();
             Dump();
         }

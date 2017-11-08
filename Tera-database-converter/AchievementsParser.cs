@@ -13,16 +13,16 @@ namespace TeraDatabaseConverter
         static List<XDocument> StrDocs;
         static List<XDocument> DataDocs;
         static Dictionary<uint, string> Achievements;
-        static void Load()
+        static void Load(string region)
         {
             StrDocs = new List<XDocument>();
             DataDocs = new List<XDocument>();
-            foreach (var f in Directory.EnumerateFiles(Utilities.DATABASE_PATH + "/StrSheet_Achievement/"))
+            foreach (var f in Directory.EnumerateFiles(Utilities.DATABASE_PATH + region + "/StrSheet_Achievement/"))
             {
                 if (f.EndsWith("-1.xml")) continue;
                 StrDocs.Add(XDocument.Load(f));
             }
-            foreach (var f in Directory.EnumerateFiles(Utilities.DATABASE_PATH + "/AchievementList/"))
+            foreach (var f in Directory.EnumerateFiles(Utilities.DATABASE_PATH + region + "/AchievementList/"))
             {
                 if (f.EndsWith("-0.xml")) continue;
                 DataDocs.Add(XDocument.Load(f));
@@ -81,9 +81,9 @@ namespace TeraDatabaseConverter
             }
             File.WriteAllLines("achievements.tsv", lines);
         }
-        public static void Parse()
+        public static void Parse(string region)
         {
-            Load();
+            Load(region);
             ParseDocs();
             Dump();
         }

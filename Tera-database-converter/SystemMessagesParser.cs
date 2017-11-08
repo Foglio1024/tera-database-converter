@@ -13,9 +13,9 @@ namespace TeraDatabaseConverter
     {
         static XDocument SystemMessages;
         static List<SysMessage> Messages;
-        static void Load()
+        static void Load(string region)
         {
-            SystemMessages = XDocument.Load(Utilities.DATABASE_PATH + "/StrSheet_SystemMessage.xml");
+            SystemMessages = XDocument.Load(Utilities.DATABASE_PATH + region + "/StrSheet_SystemMessage.xml");
         }
         static void ParseFile()
         {
@@ -104,10 +104,10 @@ namespace TeraDatabaseConverter
             }
             File.WriteAllLines("sys-messages.tsv", lines);
         }
-        public static void Parse()
+        public static void Parse(string region)
         {
             Messages = new List<SysMessage>();
-            Load();
+            Load(region);
             ParseFile();
             Dump();
         }
