@@ -290,7 +290,7 @@ namespace TeraDatabaseConverter
         }
         public void SetIcon(string iconName)
         {
-            this.IconName = iconName;
+            IconName = iconName;
         }
 
         public void SetInfo(string name, string toolTip)

@@ -70,7 +70,6 @@ namespace TeraDatabaseConverter
         {
             return s.Replace("npcname", "npcName");
         }
-
         private static string CaseOverride(string s)
         {
             s = s.Replace("NPCNAME", "npcName");
